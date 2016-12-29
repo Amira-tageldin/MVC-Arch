@@ -1,0 +1,121 @@
+﻿@using System.Data.SqlClient
+@using System.Web.UI.WebControls
+@model MyArch.ViewModel.EmployeeViewModel
+
+
+<h1>Employee</h1>
+
+<span style="font-weight: bold">
+    @Html.ActionLink("Create New", "Create")
+</span>
+<br/>
+@using (Html.BeginForm())
+{
+    <p>
+        Search By
+        @Html.TextBox("searchTerm","", new {PlaceHolder="Name Or Department"})
+        <input type="submit" value="Search" class="btn btn-info" />
+
+    </p>
+}
+<table class="table  table-hover table-striped">
+    <tr>
+        <th >@Html.ActionLink("Name", "Index", new {sortOrder = (ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc")), sortBy = "Name", Page = (ViewBag.page == null ? "1" : ViewBag.page)})</th>
+
+        <th> @Html.ActionLink("Department", "Index", new {SortOrder = (ViewBag.SortOrder == null ? "Asc" : (ViewBag.SortOrder == "Asc" ? "Desc" : "Asc")), sortBy = "Department", Page = (ViewBag.page == null ? "1" : ViewBag.page)})</th>
+        <th> </th>
+
+    </tr>
+
+    @foreach (var item in Model.EmpViewModels)
+    {
+
+        <tr>
+
+
+            <td>@item.Name</td>
+            <td >@item.Department.Name</td>
+            <td>
+                <a href="@Url.Action("Edit", "Home", new {id = item.Id})" class="btn btn-warning mybutton">Edit</a>
+
+                <a href="#" data-item-id="@item.Id"  class="btn btn-danger js-Delete">Delete</a>
+
+              
+               
+
+
+            </td>
+
+        </tr>
+
+
+    }
+
+</table>
+
+
+
+
+
+
+@{
+
+    double TotalPage = ViewBag.totalPages;
+
+}
+<ul class="pagination">
+
+
+
+    @for (int i = 1; i <= TotalPage; i++)
+    {
+
+        if (i == ViewBag.Page)
+        {
+            <li class="active">
+                @Html.ActionLink(i.ToString(), "Index", new {sortOrder = (ViewBag.SortOrder == null ? "Asc" : ViewBag.SortOrder), sortby = (ViewBag.SortBy == null ? "Name" : ViewBag.SortBy), Page = i})
+            </li>
+        }
+        else
+        {
+            <li>
+                @Html.ActionLink(i.ToString(), "Index", new {sortOrder = (ViewBag.SortOrder == null ? "Asc" : ViewBag.SortOrder), sortby = (ViewBag.SortBy == null ? "Name" : ViewBag.SortBy), Page = i})
+            </li>
+        }
+    }
+</ul>
+
+@section Scripts {
+    <script>
+
+        $(document)
+            .ready(function() {
+                $(".js-Delete")
+                    .click(function(e) {
+                        var link = $(e.target);
+                        var parent = $(this).parent('td').parent('tr');
+                        $.ajax({
+
+                            url: "/api/employee/" + link.attr("data-item-id"),
+                            method:"DELETE"
+                        })
+                          .done(function () {
+
+                             parent.remove();
+alert("success");
+
+
+                        }).fail (function() {
+
+                            alert("DElETE FAILED");
+
+
+                        });
+                    });
+
+
+            });
+
+
+    </script>
+}

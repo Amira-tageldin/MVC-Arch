@@ -1,0 +1,41 @@
+﻿@model MyArch.ViewModel.EmployeeViewModel
+
+
+<h1>@Model.Title</h1>
+
+
+
+@using (Html.BeginForm(@Model.Action, "Home"))
+{ 
+
+    @Html.AntiForgeryToken()
+    <p class="alert alert-info">All Fields Are <strong>Required</strong>
+    </p>
+    @Html.HiddenFor(m=> m.Id);
+<div class="form-group">
+    @Html.LabelFor(m => m.Name)
+    @Html.TextBoxFor(m => m.Name, new {@class = "form-control"})
+    @Html.ValidationMessageFor(m=> m.Name)
+</div>
+
+
+<div class="form-group">
+    @Html.LabelFor(m => m.DepartmentId)
+
+  @Html.DropDownListFor(m=> m.DepartmentId, new SelectList(Model.DepartmentsViewmodel, "Id", "Name"), "", new { @class = "form-control" })
+
+    @Html.ValidationMessageFor(m=> m.DepartmentId )
+
+</div>
+
+<button type="submit" value="Save" class="btn btn-primary">Submit</button>
+
+}
+
+@section scripts
+{
+
+   @Scripts.Render("~/bundles/jqueryval")
+
+
+}
